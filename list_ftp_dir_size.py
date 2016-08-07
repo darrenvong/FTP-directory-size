@@ -15,8 +15,9 @@ def calculate_total_size(ftp, dir_name, origin):
     
     Other params:
     ftp - the FTP connection resource handle
-    origin - the parent directory name, obtained by appending dir_name using
-    os.path.join
+    dir_name - the name/path to the subdirectory, relative to origin. This can
+    be empty if function is initially called at origin
+    origin - the topmost level directory the search begins from
 
     Return: the (approximate, in cases where unorthodox files' size can't be
     determined easily) total bytes of the directory dir_name.
@@ -37,7 +38,7 @@ def calculate_total_size(ftp, dir_name, origin):
                 total_size += calculate_total_size(ftp, content, origin)
                 ftp.cwd(origin)
             except:
-                print os.path.join(origin, content) # The problematic file
+                print "The problematic file is", os.path.join(origin, content) # The problematic file
                 continue
     
     return total_size
@@ -57,12 +58,13 @@ if __name__ == '__main__':
     try:
         # HOST_NAME, USER_NAME, PASSWORD here are placeholders. They should be
         # read in from a config file or from env vars
-        HOST_NAME, USER_NAME, PASSWORD = "example.com", "bob", "password"
+        HOST_NAME, USER_NAME, PASSWORD = (os.environ["FORGE_HOST"],
+            os.environ["FORGE_NAME"], os.environ["FORGE_PASS"])
         ftp = FTP(HOST_NAME)
         ftp.login(USER_NAME, PASSWORD)
 
         print ftp.getwelcome()
-        origin = "public_html/wp-content"
+        origin = "public_html/wp-content/plugins/EventsCalendarPro"
         ftp.cwd(origin)
         print "\n", ftp.pwd()
         
