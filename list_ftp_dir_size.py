@@ -135,10 +135,12 @@ if __name__ == '__main__':
         ftp = connect(HOST_NAME, USER_NAME, PASSWORD)
         origin = "/public_html/wp-content/plugins"
         
+        # plugins.txt contains the list of subdirectories to look at. This is
+        # merely an example of a way to feed a list into the directory_size function
         with open("plugins.txt", "r") as dirs:
             dir_list = [dir_name.strip() for dir_name in dirs]
         
-        print directory_size(ftp, dir_list, origin), "Bytes"
+        print "Total directory size:", directory_size(ftp, dir_list, origin), "Bytes"
         
     except IOError as e:
         print e
